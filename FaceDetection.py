@@ -28,7 +28,7 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    # Draw a rectangle around the faces
+    # 在脸部画框
     for (x, y, w, h) in faces:
         cv2.rectangle(frames, (x, y - 50), (x + w, y + h + 10), (255, 0, 0), 7)
         roi_gray = gray[y:y+h, x:x+w]
@@ -38,7 +38,7 @@ while True:
         cv2.putText(frames, emotion_list[max_index], (x + 20, y - 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255),
                     2, cv2.LINE_AA)
 
-    # Display the resulting frame
+    # 显示
     cv2.imshow('Video', cv2.resize(frames, (1000, 700), interpolation=cv2.INTER_CUBIC))
 
     if cv2.waitKey(1) & 0xFF == ord('q'):

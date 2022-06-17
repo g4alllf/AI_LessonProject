@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
+from keras.layers import BatchNormalization
 from keras.losses import categorical_crossentropy
 from keras.optimizers import Adam
 from keras.utils import np_utils
@@ -59,42 +60,51 @@ X_test = X_test.reshape(X_test.shape[0], 48, 48, 1)
 model = Sequential()
 
 # 第一层卷积层
+# 设置 padding = 'same' 防止大小报错
 model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=(48, 48, 1), padding="same"))
+# 加入batch-norm防止过拟合
+model.add(BatchNormalization())
 model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', padding="same"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Dropout(0.25))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
 
 # 第二层卷积层
 model.add(Conv2D(128, (3, 3), activation='relu', padding="same"))
+model.add(BatchNormalization())
 model.add(Conv2D(128, (3, 3), activation='relu', padding="same"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Dropout(0.25))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
 
 # 第三层卷积层
 model.add(Conv2D(256, (3, 3), activation='relu', padding="same"))
+model.add(BatchNormalization())
 model.add(Conv2D(256, (3, 3), activation='relu', padding="same"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 # 第四层卷积层
 model.add(Conv2D(512, (3, 3), activation='relu', padding="same"))
+model.add(BatchNormalization())
 model.add(Conv2D(512, (3, 3), activation='relu', padding="same"))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+model.add(BatchNormalization())
+model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
 model.add(Flatten())
 
 # 全连接层
 model.add(Dense(1024, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(512, activation='relu'))
-model.add(Dropout(0.2))
-model.add(Dense(256, activation='relu'))
-model.add(Dropout(0.2))
+model.add(BatchNormalization())
+model.add(Dropout(0.45))
+model.add(Dense(1024, activation='relu'))
+model.add(BatchNormalization())
+model.add(Dropout(0.45))
 
 # 分为要输出的几种种类
 model.add(Dense(num_labels, activation='softmax'))
-model.compile(loss=categorical_crossentropy, optimizer=Adam(), metrics=['accuracy'])
+model.compile(loss=categorical_crossentropy, optimizer=Adam(learning_rate=0.001), metrics=['accuracy'])
 
 # 训练模型
 model.fit(X_train, Y_train, batch_size=batch_size, epochs=epochs, verbose=1,
