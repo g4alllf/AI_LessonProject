@@ -59,22 +59,28 @@ X_test = X_test.reshape(X_test.shape[0], 48, 48, 1)
 model = Sequential()
 
 # 第一层卷积层
-model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=(X_train.shape[1:])))
-model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', input_shape=(48, 48, 1), padding="same"))
+model.add(Conv2D(64, kernel_size=(3, 3), activation='relu', padding="same"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Dropout(0.5))
+model.add(Dropout(0.25))
 
 # 第二层卷积层
-model.add(Conv2D(64, (3, 3), activation='relu'))
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(128, (3, 3), activation='relu', padding="same"))
+model.add(Conv2D(128, (3, 3), activation='relu', padding="same"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Dropout(0.5))
+model.add(Dropout(0.25))
 
 # 第三层卷积层
-model.add(Conv2D(128, (3, 3), activation='relu'))
-model.add(Conv2D(128, (3, 3), activation='relu'))
+model.add(Conv2D(256, (3, 3), activation='relu', padding="same"))
+model.add(Conv2D(256, (3, 3), activation='relu', padding="same"))
 model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
-model.add(Dropout(0.5))
+model.add(Dropout(0.25))
+
+# 第四层卷积层
+model.add(Conv2D(512, (3, 3), activation='relu', padding="same"))
+model.add(Conv2D(512, (3, 3), activation='relu', padding="same"))
+model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+model.add(Dropout(0.25))
 
 model.add(Flatten())
 
